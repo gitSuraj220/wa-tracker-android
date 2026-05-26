@@ -2,6 +2,7 @@ package com.watracker
 
 import android.app.AlertDialog
 import android.content.*
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.InputType
@@ -53,7 +54,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        registerReceiver(refreshReceiver, IntentFilter(WaNotificationListener.ACTION_REFRESH))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(refreshReceiver, IntentFilter(WaNotificationListener.ACTION_REFRESH), RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("UnspecifiedRegisterReceiverFlag")
+            registerReceiver(refreshReceiver, IntentFilter(WaNotificationListener.ACTION_REFRESH))
+        }
         refresh()
     }
 
